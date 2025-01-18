@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisis Button</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+        .circle-button {
+            width: 200px;
+            height: 200px;
+            background-color: red;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .description {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .crisis-button {
+            padding: 20px;
+            font-size: 18px;
+            text-transform: uppercase;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .crisis-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <button class="circle-button" onclick="showCrisisOptions()">CRISIS</button>
+    <p class="description">A crisis is a time of intense difficulty, danger, or trouble. Select your emergency below.</p>
+    
+    <div id="crisis-options" class="grid" style="display: none;">
+        <!-- Crisis buttons will be dynamically added here -->
+    </div>
+
+    <script>
+        const crisisEvents = [
+            "FIRE", "MEDICAL EMERGENCY", "HUNGRY", "HOMELESSNESS",
+            "DOMESTIC VIOLENCE", "NATURAL DISASTER", "CRIME OR SAFETY ISSUE", "MENTAL HEALTH CRISIS"
+        ];
+
+        function showCrisisOptions() {
+            const grid = document.getElementById("crisis-options");
+            grid.innerHTML = ""; // Clear existing buttons
+            crisisEvents.forEach(event => {
+                const button = document.createElement("button");
+                button.className = "crisis-button";
+                button.textContent = event;
+                button.onclick = () => handleCrisis(event);
+                grid.appendChild(button);
+            });
+            grid.style.display = "grid"; // Show the grid
+        }
+
+        function handleCrisis(eventName) {
+            fetch("/handle_crisis", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ event_name: eventName })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.response))
+            .catch(error => console.error("Error:", error));
+        }
+    </script>
+</body>
+</html>
