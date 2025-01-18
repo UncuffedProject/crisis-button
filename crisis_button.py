@@ -27,6 +27,17 @@ NATURAL_DISASTERS = {
     "DROUGHT": "Contact local water authorities for resources. Info: 555-WATER."
 }
 
+# Specific man-made disaster resources
+MAN_MADE_DISASTERS = {
+    "CRIME": "Report to local authorities or call 911.",
+    "ARSON": "Contact fire services immediately. Helpline: 555-ARSON.",
+    "CIVIL DISORDER": "Avoid affected areas and follow public safety announcements.",
+    "TERRORISM": "Report suspicious activity to authorities. Emergency line: 555-TERROR.",
+    "WAR": "Seek shelter and follow local government guidelines.",
+    "BIOLOGICAL / CHEMICAL THREAT": "Evacuate and contact emergency services. Helpline: 555-BIOCHEM.",
+    "CYBER ATTACKS": "Contact your IT administrator or report to 555-CYBER."
+}
+
 # Simulate location retrieval (replace this with actual GPS for production)
 def get_location():
     geolocator = Nominatim(user_agent="crisis_button_app")
@@ -44,6 +55,9 @@ def handle_crisis():
     # Handle natural disasters separately
     if event_name in NATURAL_DISASTERS:
         response = NATURAL_DISASTERS[event_name]
+    # Handle man-made disasters separately
+    elif event_name in MAN_MADE_DISASTERS:
+        response = MAN_MADE_DISASTERS[event_name]
     else:
         response = RESOURCES.get(event_name, "No specific response available.")
     

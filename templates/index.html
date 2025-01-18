@@ -68,9 +68,10 @@
 
     <script>
         const crisisEvents = [
-            "FIRE", "MEDICAL EMERGENCY", "HUNGRY", "HOMELESSNESS",
-            "DOMESTIC VIOLENCE", "NATURAL DISASTER", "CRIME OR SAFETY ISSUE", "MENTAL HEALTH CRISIS", "I'M LOST"
-        ];
+    "FIRE", "MEDICAL EMERGENCY", "HUNGRY", "HOMELESSNESS",
+    "DOMESTIC VIOLENCE", "NATURAL DISASTER", "MAN MADE DISASTER",
+    "CRIME OR SAFETY ISSUE", "MENTAL HEALTH CRISIS", "I'M LOST"
+];
 
         const naturalDisasters = [
             "EARTHQUAKE", "FLOOD", "HURRICANE", "TORNADO", "WILDFIRE", "TSUNAMI", "BLIZZARD", "DROUGHT"
@@ -90,14 +91,39 @@
         }
 
         function handleCrisis(eventName) {
-            const grid = document.getElementById("crisis-options");
-            if (eventName === "NATURAL DISASTER") {
-                grid.innerHTML = ""; // Clear existing buttons
-                naturalDisasters.forEach(disaster => {
-                    const button = document.createElement("button");
-                    button.className = "crisis-button";
-                    button.textContent = disaster;
-                    button.onclick = () => alert(`Resources for ${disaster} will be displayed here.`);
+    const grid = document.getElementById("crisis-options");
+    if (eventName === "NATURAL DISASTER") {
+        grid.innerHTML = ""; // Clear existing buttons
+        naturalDisasters.forEach(disaster => {
+            const button = document.createElement("button");
+            button.className = "crisis-button";
+            button.textContent = disaster;
+            button.onclick = () => alert(`Resources for ${disaster} will be displayed here.`);
+            grid.appendChild(button);
+        });
+    } else if (eventName === "MAN MADE DISASTER") {
+        const manMadeDisasters = [
+            "CRIME", "ARSON", "CIVIL DISORDER", "TERRORISM", "WAR", "BIOLOGICAL / CHEMICAL THREAT", "CYBER ATTACKS"
+        ];
+        grid.innerHTML = ""; // Clear existing buttons
+        manMadeDisasters.forEach(disaster => {
+            const button = document.createElement("button");
+            button.className = "crisis-button";
+            button.textContent = disaster;
+            button.onclick = () => alert(`Resources for ${disaster} will be displayed here.`);
+            grid.appendChild(button);
+        });
+    } else {
+        fetch("/handle_crisis", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ event_name: eventName })
+        })
+        .then(response => response.json())
+        .then(data => alert(data.response))
+        .catch(error => console.error("Error:", error));
+    }
+} will be displayed here.`);
                     grid.appendChild(button);
                 });
             } else {
