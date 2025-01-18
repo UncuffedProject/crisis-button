@@ -42,5 +42,9 @@ def get_description():
     description = find_description(DISASTER_TYPES, subcategory)
     return jsonify({"description": description or "No description available."})
 
+@app.route("/ping", methods=["GET"])
+def ping():
+    return "pong", 200
+
 if __name__ == "__main__":
     app.run(debug=True)
