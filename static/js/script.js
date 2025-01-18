@@ -30,7 +30,13 @@ function showSubcategories(category) {
                 const button = document.createElement("button");
                 button.className = "button";
                 button.textContent = subcategory;
-                button.onclick = () => showDescription(subcategory);
+                button.onclick = () => {
+                    if (category === "Natural Disasters") {
+                        showSubcategories(subcategory); // Handle nested subcategories
+                    } else {
+                        showDescription(subcategory); // Handle leaf nodes
+                    }
+                };
                 grid.appendChild(button);
             });
             descriptionBox.style.display = "none";

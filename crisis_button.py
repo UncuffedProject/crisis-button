@@ -15,8 +15,11 @@ def get_categories():
 @app.route("/get_subcategories", methods=["POST"])
 def get_subcategories():
     category = request.json.get("category")
-    subcategories = DISASTER_TYPES.get(category, [])
-    return jsonify({"subcategories": subcategories})
+    subcategories = DISASTER_TYPES.get(category, {})
+    
+    if isinstance(subcategories, dict):  # Nested subcategories
+        return jsonify({"subcategories": list(subcategories.keys())})
+    return jsonify({"subcategories": subcategories})  # Flat list
 
 @app.route("/get_description", methods=["POST"])
 def get_description():
