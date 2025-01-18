@@ -4,14 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crisis Button</title>
+    
     <!-- Correct path for CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <h1>Community Response in Situations Involving Stress</h1>
     <button class="circle-button" onclick="showCategories()">CRISIS</button>
+
+    <p class="description">
+        A crisis is a situation that poses a significant threat to someone's safety, well-being, or stability.<br>
+        It can arise from sudden emergencies, ongoing difficulties, or critical challenges requiring immediate attention.<br>
+        Tap on the red button to find services and resources to help.
+    </p>
+
     <div id="grid-container" class="grid" style="display: none;"></div>
+    
     <div id="description-box" style="display: none;"></div>
+    
     <!-- Correct path for JavaScript -->
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
