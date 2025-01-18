@@ -12,8 +12,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100vh;
+            justify-content: flex-start;
             background-color: #f5f5f5;
         }
         .circle-button {
@@ -30,31 +29,52 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-top: 20px;
         }
         .description {
-            margin-top: 10px;
+            margin: 10px 20px;
             text-align: center;
             font-size: 16px;
+        }
+        .grid-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
         }
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 15px;
+            padding: 10px;
+            max-width: 600px;
         }
         .crisis-button {
-            padding: 20px;
+            padding: 15px;
             font-size: 18px;
+            font-weight: bold;
             text-transform: uppercase;
             background-color: #007BFF;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
+            width: 100%;
             text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         .crisis-button:hover {
             background-color: #0056b3;
+        }
+        #description-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 600px;
+            font-size: 16px;
         }
     </style>
 </head>
@@ -66,34 +86,73 @@
         Tap on the red button to find services and resources to help.
     </p>
     
-    <div id="crisis-options" class="grid" style="display: none;">
-        <!-- Crisis buttons will be dynamically added here -->
+    <div class="grid-container">
+        <div id="crisis-options" class="grid" style="display: none;">
+            <!-- Crisis buttons will be dynamically added here -->
+        </div>
+        <div id="description-box" style="display: none;"></div>
     </div>
 
     <script>
-        const crisisEvents = [
-            "FIRE", "MEDICAL EMERGENCY", "HUNGRY", "HOMELESSNESS",
-            "DOMESTIC VIOLENCE", "NATURAL DISASTER", "MAN MADE DISASTER",
-            "CRIME OR SAFETY ISSUE", "MENTAL HEALTH CRISIS", "I'M LOST"
-        ];
+        const descriptions = {
+            "FIRE": "A fire can be devastating, requiring immediate attention. Call 911 and evacuate safely.",
+            "MEDICAL EMERGENCY": "Medical emergencies require immediate professional attention. Call 911 or visit the nearest hospital.",
+            "HUNGRY": "For those in need of food, local food banks and community services are available to help.",
+            "HOMELESSNESS": "Homelessness is a complex issue. Select a specific type to learn more about tailored resources.",
+            "DOMESTIC VIOLENCE": "Domestic violence is a serious issue. The National Domestic Violence Hotline is available at 800-799-7233.",
+            "NATURAL DISASTER": "Natural disasters include hurricanes, earthquakes, and more. Select a specific type for tailored resources.",
+            "MAN MADE DISASTER": "Man-made disasters include terrorism, cyber attacks, and other human-caused crises.",
+            "CRIME OR SAFETY ISSUE": "For crimes or safety concerns, contact local law enforcement or dial 911.",
+            "MENTAL HEALTH CRISIS": "Mental health crises can be addressed through hotlines like the National Suicide Prevention Hotline at 988.",
+            "I'M LOST": "If you're lost, contact local authorities or use GPS navigation tools for assistance."
+        };
 
-        const naturalDisasters = [
-            "EARTHQUAKE", "FLOOD", "HURRICANE", "TORNADO", "WILDFIRE", "TSUNAMI", "BLIZZARD", "DROUGHT"
-        ];
+        const subDescriptions = {
+            "EARTHQUAKE": "During an earthquake, drop, cover, and hold on. Stay indoors until shaking stops.",
+            "FLOOD": "Move to higher ground immediately. Avoid walking or driving through floodwaters.",
+            "HURRICANE": "Stay indoors and follow evacuation orders. Stock up on essentials.",
+            "TORNADO": "Find shelter in a basement or interior room without windows.",
+            "WILDFIRE": "Evacuate immediately if instructed. Protect yourself from smoke.",
+            "TSUNAMI": "Move to high ground. Tsunami waves can arrive quickly after an earthquake.",
+            "BLIZZARD": "Stay indoors, conserve energy, and avoid unnecessary travel.",
+            "DROUGHT": "Conserve water and seek community assistance for water distribution.",
+            "CRIME": "Report criminal activity to local law enforcement.",
+            "ARSON": "If you suspect arson, contact the fire department immediately.",
+            "CIVIL DISORDER": "Avoid areas of unrest and follow guidance from authorities.",
+            "TERRORISM": "Remain vigilant and report suspicious activity to authorities.",
+            "WAR": "Follow government directives and seek shelter.",
+            "BIOLOGICAL / CHEMICAL THREAT": "Evacuate the area and contact emergency services.",
+            "CYBER ATTACKS": "Secure your online accounts and contact IT support.",
+            "CHRONIC HOMELESSNESS": "Long-term homelessness often involves complex challenges such as mental health or substance abuse.",
+            "TRANSITIONAL HOMELESSNESS": "A temporary state of homelessness often caused by financial crises.",
+            "EPISODIC HOMELESSNESS": "Periods of housing instability that occur intermittently.",
+            "HIDDEN HOMELESSNESS": "Individuals not visible to services, such as couch surfing.",
+            "SITUATIONAL HOMELESSNESS": "A short-term situation caused by a specific crisis like a job loss.",
+            "FAMILY HOMELESSNESS": "Entire family units experiencing homelessness, often requiring child-focused resources.",
+            "YOUTH HOMELESSNESS": "Young individuals under 24 experiencing homelessness, often linked to family rejection or aging out of foster care.",
+            "VETERAN HOMELESSNESS": "Veterans experiencing homelessness often due to mental health challenges or lack of support.",
+            "RURAL HOMELESSNESS": "Homelessness in less densely populated areas, often without visible shelters.",
+            "URBAN HOMELESSNESS": "Homelessness in cities, including living on streets or in shelters."
+        };
 
-        const manMadeDisasters = [
-            "CRIME", "ARSON", "CIVIL DISORDER", "TERRORISM", "WAR", "BIOLOGICAL / CHEMICAL THREAT", "CYBER ATTACKS"
-        ];
-
+        const crisisEvents = Object.keys(descriptions);
         const homelessnessTypes = [
             "CHRONIC HOMELESSNESS", "TRANSITIONAL HOMELESSNESS", "EPISODIC HOMELESSNESS",
             "HIDDEN HOMELESSNESS", "SITUATIONAL HOMELESSNESS", "FAMILY HOMELESSNESS",
             "YOUTH HOMELESSNESS", "VETERAN HOMELESSNESS", "RURAL HOMELESSNESS", "URBAN HOMELESSNESS"
         ];
+        const naturalDisasters = [
+            "EARTHQUAKE", "FLOOD", "HURRICANE", "TORNADO", "WILDFIRE", "TSUNAMI", "BLIZZARD", "DROUGHT"
+        ];
+        const manMadeDisasters = [
+            "CRIME", "ARSON", "CIVIL DISORDER", "TERRORISM", "WAR", "BIOLOGICAL / CHEMICAL THREAT", "CYBER ATTACKS"
+        ];
 
         function showCrisisOptions() {
             const grid = document.getElementById("crisis-options");
-            grid.innerHTML = ""; // Clear existing buttons
+            const descriptionBox = document.getElementById("description-box");
+            grid.innerHTML = ""; // Clear buttons
+            descriptionBox.style.display = "none"; // Hide the description box
             crisisEvents.forEach(event => {
                 const button = document.createElement("button");
                 button.className = "crisis-button";
@@ -101,48 +160,52 @@
                 button.onclick = () => handleCrisis(event);
                 grid.appendChild(button);
             });
-            grid.style.display = "grid"; // Show the grid
+            grid.style.display = "grid"; // Show buttons
         }
 
         function handleCrisis(eventName) {
             const grid = document.getElementById("crisis-options");
-            if (eventName === "NATURAL DISASTER") {
-                grid.innerHTML = "";
-                naturalDisasters.forEach(disaster => {
-                    const button = document.createElement("button");
-                    button.className = "crisis-button";
-                    button.textContent = disaster;
-                    button.onclick = () => alert(`Resources for ${disaster} will be displayed here.`);
-                    grid.appendChild(button);
-                });
-            } else if (eventName === "MAN MADE DISASTER") {
-                grid.innerHTML = "";
-                manMadeDisasters.forEach(disaster => {
-                    const button = document.createElement("button");
-                    button.className = "crisis-button";
-                    button.textContent = disaster;
-                    button.onclick = () => alert(`Resources for ${disaster} will be displayed here.`);
-                    grid.appendChild(button);
-                });
-            } else if (eventName === "HOMELESSNESS") {
+            const descriptionBox = document.getElementById("description-box");
+            descriptionBox.style.display = "block";
+            if (eventName === "HOMELESSNESS") {
                 grid.innerHTML = "";
                 homelessnessTypes.forEach(type => {
                     const button = document.createElement("button");
                     button.className = "crisis-button";
                     button.textContent = type;
-                    button.onclick = () => alert(`Resources for ${type} will be displayed here.`);
+                    button.onclick = () => showDescription(type);
                     grid.appendChild(button);
                 });
+                descriptionBox.innerHTML = descriptions["HOMELESSNESS"];
+            } else if (eventName === "NATURAL DISASTER") {
+                grid.innerHTML = "";
+                naturalDisasters.forEach(type => {
+                    const button = document.createElement("button");
+                    button.className = "crisis-button";
+                    button.textContent = type;
+                    button.onclick = () => showDescription(type);
+                    grid.appendChild(button);
+                });
+                descriptionBox.innerHTML = descriptions["NATURAL DISASTER"];
+            } else if (eventName === "MAN MADE DISASTER") {
+                grid.innerHTML = "";
+                manMadeDisasters.forEach(type => {
+                    const button = document.createElement("button");
+                    button.className = "crisis-button";
+                    button.textContent = type;
+                    button.onclick = () => showDescription(type);
+                    grid.appendChild(button);
+                });
+                descriptionBox.innerHTML = descriptions["MAN MADE DISASTER"];
             } else {
-                fetch("/handle_crisis", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ event_name: eventName })
-                })
-                .then(response => response.json())
-                .then(data => alert(data.response))
-                .catch(error => console.error("Error:", error));
+                showDescription(eventName);
             }
+        }
+
+        function showDescription(eventName) {
+            const descriptionBox = document.getElementById("description-box");
+            descriptionBox.style.display = "block";
+            descriptionBox.innerHTML = subDescriptions[eventName] || descriptions[eventName] || "No description available.";
         }
     </script>
 </body>
