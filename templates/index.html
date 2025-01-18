@@ -46,7 +46,7 @@
             padding: 20px;
             font-size: 18px;
             text-transform: uppercase;
-            background-color: purple;
+            background-color: #007BFF;
             color: white;
             border: none;
             border-radius: 5px;
@@ -54,7 +54,7 @@
             text-align: center;
         }
         .crisis-button:hover {
-            background-color: #4B0082;
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -85,6 +85,12 @@
             "CRIME", "ARSON", "CIVIL DISORDER", "TERRORISM", "WAR", "BIOLOGICAL / CHEMICAL THREAT", "CYBER ATTACKS"
         ];
 
+        const homelessnessTypes = [
+            "CHRONIC HOMELESSNESS", "TRANSITIONAL HOMELESSNESS", "EPISODIC HOMELESSNESS",
+            "HIDDEN HOMELESSNESS", "SITUATIONAL HOMELESSNESS", "FAMILY HOMELESSNESS",
+            "YOUTH HOMELESSNESS", "VETERAN HOMELESSNESS", "RURAL HOMELESSNESS", "URBAN HOMELESSNESS"
+        ];
+
         function showCrisisOptions() {
             const grid = document.getElementById("crisis-options");
             grid.innerHTML = ""; // Clear existing buttons
@@ -101,7 +107,7 @@
         function handleCrisis(eventName) {
             const grid = document.getElementById("crisis-options");
             if (eventName === "NATURAL DISASTER") {
-                grid.innerHTML = ""; // Clear existing buttons
+                grid.innerHTML = "";
                 naturalDisasters.forEach(disaster => {
                     const button = document.createElement("button");
                     button.className = "crisis-button";
@@ -110,12 +116,21 @@
                     grid.appendChild(button);
                 });
             } else if (eventName === "MAN MADE DISASTER") {
-                grid.innerHTML = ""; // Clear existing buttons
+                grid.innerHTML = "";
                 manMadeDisasters.forEach(disaster => {
                     const button = document.createElement("button");
                     button.className = "crisis-button";
                     button.textContent = disaster;
                     button.onclick = () => alert(`Resources for ${disaster} will be displayed here.`);
+                    grid.appendChild(button);
+                });
+            } else if (eventName === "HOMELESSNESS") {
+                grid.innerHTML = "";
+                homelessnessTypes.forEach(type => {
+                    const button = document.createElement("button");
+                    button.className = "crisis-button";
+                    button.textContent = type;
+                    button.onclick = () => alert(`Resources for ${type} will be displayed here.`);
                     grid.appendChild(button);
                 });
             } else {
