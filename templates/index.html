@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,14 +86,10 @@
         It can arise from sudden emergencies, ongoing difficulties, or critical challenges requiring immediate attention.<br>
         Tap on the red button to find services and resources to help.
     </p>
-    
     <div class="grid-container">
-        <div id="crisis-options" class="grid" style="display: none;">
-            <!-- Crisis buttons will be dynamically added here -->
-        </div>
+        <div id="crisis-options" class="grid" style="display: none;"></div>
         <div id="description-box" style="display: none;"></div>
     </div>
-
     <script>
         const descriptions = {
             "FIRE": "Fire-related emergencies require immediate action. Click a subcategory to learn more.",
@@ -154,10 +151,7 @@
 
         function showCrisisOptions() {
             const grid = document.getElementById("crisis-options");
-            const descriptionBox = document.getElementById("description-box");
             grid.innerHTML = "";
-            descriptionBox.style.display = "none";
-
             Object.keys(descriptions).forEach(event => {
                 const button = document.createElement("button");
                 button.className = "crisis-button";
@@ -171,12 +165,13 @@
         function handleCrisis(eventName) {
             const grid = document.getElementById("crisis-options");
             const descriptionBox = document.getElementById("description-box");
+            descriptionBox.innerHTML = descriptions[eventName] || "No description available.";
             descriptionBox.style.display = "block";
 
-            const subcategories = Object.keys(subDescriptions).filter(key => key.startsWith(eventName));
-            if (subcategories.length > 0) {
+            const subEvents = Object.keys(subDescriptions).filter(sub => sub.startsWith(eventName));
+            if (subEvents.length > 0) {
                 grid.innerHTML = "";
-                subcategories.forEach(sub => {
+                subEvents.forEach(sub => {
                     const button = document.createElement("button");
                     button.className = "crisis-button";
                     button.textContent = sub;
@@ -184,12 +179,11 @@
                     grid.appendChild(button);
                 });
             }
-            showDescription(eventName);
         }
 
         function showDescription(eventName) {
             const descriptionBox = document.getElementById("description-box");
-            descriptionBox.innerHTML = subDescriptions[eventName] || descriptions[eventName] || "No description available.";
+            descriptionBox.innerHTML = subDescriptions[eventName] || "No description available.";
         }
     </script>
 </body>
