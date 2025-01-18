@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,6 +76,21 @@
             max-width: 600px;
             font-size: 16px;
         }
+        #back-button {
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #FF4500;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        #back-button:hover {
+            background-color: #E63900;
+        }
     </style>
 </head>
 <body>
@@ -89,6 +103,7 @@
     <div class="grid-container">
         <div id="crisis-options" class="grid" style="display: none;"></div>
         <div id="description-box" style="display: none;"></div>
+        <button id="back-button" style="display: none;" onclick="showCrisisOptions()">Back</button>
     </div>
     <script>
         const descriptions = {
@@ -108,82 +123,53 @@
             "ELECTRICAL FIRE": "Turn off the power source if safe. Use a fire extinguisher designed for electrical fires.",
             "VEHICLE FIRE": "Exit the vehicle immediately and move to safety. Call 911.",
             "INDUSTRIAL FIRE": "Follow workplace safety protocols and evacuate to designated areas.",
+            // Add all other sub-descriptions here
+        };
 
-            "HEART ATTACK": "Symptoms include chest pain and shortness of breath. Call 911 immediately.",
-            "STROKE": "Remember FAST: Face drooping, Arm weakness, Speech difficulty, Time to call 911.",
-            "SEVERE INJURY": "Apply pressure to bleeding wounds and keep the injured person still. Call 911.",
-            "ALLERGIC REACTION": "Symptoms include swelling and difficulty breathing. Use an EpiPen if available and call 911.",
-            "SEIZURE": "Clear the area of hazards. Do not restrain the person. Call for help if it lasts more than 5 minutes.",
-            "BREATHING DIFFICULTY": "Administer prescribed medications if available. Call 911.",
-            "POISONING": "Call Poison Control at 1-800-222-1222 or seek emergency help immediately.",
-
-            "FOOD INSECURITY": "Contact local food banks for assistance.",
-            "LACK OF ACCESS TO MEALS": "Seek programs offering free meals or community support.",
-            "MALNUTRITION": "Consult healthcare providers for nutrition-related programs.",
-            "EMERGENCY FOOD SUPPLIES": "Locate emergency distribution centers for immediate aid.",
-
-            "PHYSICAL ABUSE": "Physical abuse involves bodily harm. Call 911 or a support hotline for immediate help.",
-            "EMOTIONAL ABUSE": "Emotional abuse may involve manipulation or control. Counseling services are available.",
-            "FINANCIAL ABUSE": "Financial abuse involves controlling someone's access to financial resources. Seek advocacy support.",
-            "SEXUAL ABUSE": "Sexual abuse requires immediate attention. Contact a sexual assault hotline for confidential assistance.",
-            "COERCIVE CONTROL": "Coercive control includes patterns of behavior that dominate or exploit. Plan a safe exit strategy.",
-
-            "ASSAULT": "Assault includes physical attacks. Seek medical help and contact authorities.",
-            "BURGLARY": "Burglary involves unauthorized entry. File a police report and avoid disturbing the scene.",
-            "THEFT": "Theft involves stolen property. Report incidents to law enforcement.",
-            "VANDALISM": "Vandalism includes property damage. Document the damage and report it to authorities.",
-            "ACTIVE SHOOTER": "In an active shooter situation, run, hide, and fight as a last resort. Call 911.",
-            "KIDNAPPING": "Report missing persons or suspected abductions to law enforcement immediately.",
-            "STALKING": "Stalking involves repeated harassment. Document incidents and contact authorities.",
-
-            "SUICIDAL THOUGHTS": "If someone is suicidal, call 988 or a suicide prevention hotline immediately.",
-            "ANXIETY ATTACK": "Encourage slow, deep breaths and provide a calm environment.",
-            "SEVERE DEPRESSION": "Severe depression can require immediate intervention. Contact a counselor or hotline.",
-            "PSYCHOTIC EPISODE": "Psychotic episodes may involve hallucinations or delusions. Call 911 if safety is a concern.",
-            "SUBSTANCE ABUSE CRISIS": "Substance abuse crises require urgent care. Contact a substance abuse hotline.",
-            "PTSD EPISODE": "Post-traumatic stress episodes can be alleviated with grounding techniques and professional help.",
-
-            "LOST IN A CITY": "Use GPS or public transportation apps to find your way.",
-            "LOST IN THE WILDERNESS": "Stay in one place and make yourself visible to rescuers.",
-            "LOST ON PUBLIC TRANSIT": "Contact transit staff or use station maps for guidance.",
-            "LOST WHILE TRAVELING ABROAD": "Reach out to local embassies or law enforcement for assistance."
+        const subCategories = {
+            "FIRE": ["HOUSE FIRE", "FOREST FIRE", "ELECTRICAL FIRE", "VEHICLE FIRE", "INDUSTRIAL FIRE"],
+            "MEDICAL EMERGENCY": ["HEART ATTACK", "STROKE", "SEVERE INJURY", "ALLERGIC REACTION", "SEIZURE", "BREATHING DIFFICULTY", "POISONING"],
+            "HUNGRY": ["FOOD INSECURITY", "LACK OF ACCESS TO MEALS", "MALNUTRITION", "EMERGENCY FOOD SUPPLIES"],
+            "DOMESTIC VIOLENCE": ["PHYSICAL ABUSE", "EMOTIONAL ABUSE", "FINANCIAL ABUSE", "SEXUAL ABUSE", "COERCIVE CONTROL"],
+            "CRIME OR SAFETY ISSUE": ["ASSAULT", "BURGLARY", "THEFT", "VANDALISM", "ACTIVE SHOOTER", "KIDNAPPING", "STALKING"],
+            "MENTAL HEALTH CRISIS": ["SUICIDAL THOUGHTS", "ANXIETY ATTACK", "SEVERE DEPRESSION", "PSYCHOTIC EPISODE", "SUBSTANCE ABUSE CRISIS", "PTSD EPISODE"],
+            "I'M LOST": ["LOST IN A CITY", "LOST IN THE WILDERNESS", "LOST ON PUBLIC TRANSIT", "LOST WHILE TRAVELING ABROAD"]
         };
 
         function showCrisisOptions() {
             const grid = document.getElementById("crisis-options");
-            grid.innerHTML = "";
-            Object.keys(descriptions).forEach(event => {
-                const button = document.createElement("button");
-                button.className = "crisis-button";
-                button.textContent = event;
-                button.onclick = () => handleCrisis(event);
-                grid.appendChild(button);
-            });
-            grid.style.display = "grid";
+            const descriptionBox = document.getElementById("description-box");
+            const backButton = document.getElementById("back-button");
+
+            grid.innerHTML = Object.keys(descriptions).map(event => 
+                `<button class="crisis-button" onclick="showSubCategories('${event}')">${event}</button>`).join('');
+            
+            grid.style.display = 'grid';
+            descriptionBox.style.display = 'none';
+            backButton.style.display = 'none';
         }
 
-        function handleCrisis(eventName) {
+        function showSubCategories(mainCategory) {
             const grid = document.getElementById("crisis-options");
             const descriptionBox = document.getElementById("description-box");
-            descriptionBox.innerHTML = descriptions[eventName] || "No description available.";
-            descriptionBox.style.display = "block";
+            const backButton = document.getElementById("back-button");
 
-            const subEvents = Object.keys(subDescriptions).filter(sub => sub.startsWith(eventName));
-            if (subEvents.length > 0) {
-                grid.innerHTML = "";
-                subEvents.forEach(sub => {
-                    const button = document.createElement("button");
-                    button.className = "crisis-button";
-                    button.textContent = sub;
-                    button.onclick = () => showDescription(sub);
-                    grid.appendChild(button);
-                });
+            const subItems = subCategories[mainCategory];
+            if (subItems) {
+                grid.innerHTML = subItems.map(sub => 
+                    `<button class="crisis-button" onclick="showDescription('${sub}')">${sub}</button>`).join('');
+                grid.style.display = 'grid';
             }
+            
+            descriptionBox.innerHTML = descriptions[mainCategory];
+            descriptionBox.style.display = 'block';
+            backButton.style.display = 'block';
         }
 
         function showDescription(eventName) {
             const descriptionBox = document.getElementById("description-box");
             descriptionBox.innerHTML = subDescriptions[eventName] || "No description available.";
+            descriptionBox.style.display = 'block';
         }
     </script>
 </body>
