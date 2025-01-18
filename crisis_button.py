@@ -16,18 +16,31 @@ def get_categories():
 def get_subcategories():
     category = request.json.get("category")
     subcategories = DISASTER_TYPES.get(category, {})
-    
-    if isinstance(subcategories, dict):  # Nested subcategories
+
+    if isinstance(subcategories, dict):  # Check if it's a nested dictionary
         return jsonify({"subcategories": list(subcategories.keys())})
-    return jsonify({"subcategories": subcategories})  # Flat list
+    elif isinstance(subcategories, list):  # If it's already a flat list
+        return jsonify({"subcategories": subcategories})
+    else:
+        return jsonify({"subcategories": []})  # Default empty list
 
 @app.route("/get_description", methods=["POST"])
 def get_description():
     subcategory = request.json.get("subcategory")
-    for category, items in DISASTER_DESCRIPTIONS.items():
-        if subcategory in items:
-            return jsonify({"description": items[subcategory]})
-    return jsonify({"description": "No description available."})
+
+    def find_description(category_data, target):
+        if isinstance(category_data, dict):
+            for key, value in category_data.items():
+                if key == target:
+                    return value
+                elif isinstance(value, dict):
+                    result = find_description(value, target)
+                    if result:
+                        return result
+        return None
+
+    description = find_description(DISASTER_TYPES, subcategory)
+    return jsonify({"description": description or "No description available."})
 
 if __name__ == "__main__":
     app.run(debug=True)

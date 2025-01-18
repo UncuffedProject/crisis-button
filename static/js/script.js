@@ -31,11 +31,19 @@ function showSubcategories(category) {
                 button.className = "button";
                 button.textContent = subcategory;
                 button.onclick = () => {
-                    if (category === "Natural Disasters") {
-                        showSubcategories(subcategory); // Handle nested subcategories
-                    } else {
-                        showDescription(subcategory); // Handle leaf nodes
-                    }
+                    fetch("/get_subcategories", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ category: subcategory })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.subcategories && data.subcategories.length > 0) {
+                                showSubcategories(subcategory); // Navigate deeper
+                            } else {
+                                showDescription(subcategory); // Display description
+                            }
+                        });
                 };
                 grid.appendChild(button);
             });
