@@ -1,3 +1,4 @@
+/* General Body Styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,55 +7,79 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    background-color: #f5f5f5;
+    background-color: #f5f5f5; /* Light gray background */
 }
-.circle-button {
-    width: 200px;
-    height: 200px;
-    background-color: #8B0000;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
+
+/* Verbiage (Heading) */
+h1 {
+    margin: 20px 0;
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
+    font-size: 24px; /* Large font for the heading */
+    font-weight: bold;
+    color: #333; /* Dark gray text color */
 }
+
+/* Red Circle Button */
+.circle-button {
+    width: 200px; /* Fixed width */
+    height: 200px; /* Fixed height */
+    background-color: #8B0000; /* Deep red background */
+    color: white; /* White text color */
+    font-size: 24px; /* Large text size */
+    font-weight: bold;
+    border: none; /* No border */
+    border-radius: 50%; /* Fully rounded for circle shape */
+    cursor: pointer; /* Pointer cursor on hover */
+    text-align: center;
+    display: flex; /* Flexbox for centering text */
+    align-items: center; /* Vertical centering */
+    justify-content: center; /* Horizontal centering */
+    margin-top: 20px; /* Spacing above the button */
+}
+
+/* Red Circle Button Hover Effect */
+.circle-button:hover {
+    background-color: #B22222; /* Brighter red on hover */
+}
+
+/* Grid Container for Buttons */
 .grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    padding: 10px;
-    max-width: 600px;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 15px; /* Space between grid items */
+    padding: 10px; /* Padding inside the grid */
+    max-width: 600px; /* Maximum width for responsiveness */
 }
+
+/* General Button Styles */
 .button {
-    padding: 15px;
-    font-size: 18px;
+    padding: 15px; /* Inner padding for the button */
+    font-size: 18px; /* Font size for the text */
     font-weight: bold;
-    text-transform: uppercase;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 100%;
+    text-transform: uppercase; /* Convert text to uppercase */
+    background-color: #007BFF; /* Blue background */
+    color: white; /* White text color */
+    border: none; /* No border */
+    border-radius: 10px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    width: 100%; /* Full width of the grid cell */
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
 }
+
+/* Button Hover Effect */
 .button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Darker blue on hover */
 }
+
+/* Description Box Styles */
 #description-box {
-    margin-top: 20px;
-    padding: 15px;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 600px;
-    font-size: 16px;
+    margin-top: 20px; /* Space above the description box */
+    padding: 15px; /* Inner padding */
+    background: white; /* White background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow effect */
+    width: 90%; /* Responsive width */
+    max-width: 600px; /* Maximum width */
+    font-size: 16px; /* Text size */
 }
