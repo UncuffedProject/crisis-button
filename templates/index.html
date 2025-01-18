@@ -95,116 +95,100 @@
 
     <script>
         const descriptions = {
-            "FIRE": "A fire can be devastating, requiring immediate attention. Call 911 and evacuate safely.",
-            "MEDICAL EMERGENCY": "Medical emergencies require immediate professional attention. Call 911 or visit the nearest hospital.",
-            "HUNGRY": "For those in need of food, local food banks and community services are available to help.",
-            "HOMELESSNESS": "Homelessness is a complex issue. Select a specific type to learn more about tailored resources.",
-            "DOMESTIC VIOLENCE": "Domestic violence is a serious issue. The National Domestic Violence Hotline is available at 800-799-7233.",
-            "NATURAL DISASTER": "Natural disasters include hurricanes, earthquakes, and more. Select a specific type for tailored resources.",
-            "MAN MADE DISASTER": "Man-made disasters include terrorism, cyber attacks, and other human-caused crises.",
-            "CRIME OR SAFETY ISSUE": "For crimes or safety concerns, contact local law enforcement or dial 911.",
-            "MENTAL HEALTH CRISIS": "Mental health crises can be addressed through hotlines like the National Suicide Prevention Hotline at 988.",
-            "I'M LOST": "If you're lost, contact local authorities or use GPS navigation tools for assistance."
+            "FIRE": "Fire-related emergencies require immediate action. Click a subcategory to learn more.",
+            "MEDICAL EMERGENCY": "Medical emergencies include life-threatening conditions that need immediate attention.",
+            "HUNGRY": "This category focuses on food insecurity and lack of access to meals.",
+            "HOMELESSNESS": "Homelessness includes various types, each requiring unique resources. Select a type to proceed.",
+            "DOMESTIC VIOLENCE": "Domestic violence can take many forms, including physical and emotional abuse. Click to learn more.",
+            "CRIME OR SAFETY ISSUE": "Crimes and safety concerns range from theft to more serious threats. Select a type to get help.",
+            "MENTAL HEALTH CRISIS": "Mental health crises can include suicidal thoughts, severe depression, and more.",
+            "I'M LOST": "Being lost can occur in various scenarios, from urban areas to wilderness. Click to find help."
         };
 
         const subDescriptions = {
-            "EARTHQUAKE": "During an earthquake, drop, cover, and hold on. Stay indoors until shaking stops.",
-            "FLOOD": "Move to higher ground immediately. Avoid walking or driving through floodwaters.",
-            "HURRICANE": "Stay indoors and follow evacuation orders. Stock up on essentials.",
-            "TORNADO": "Find shelter in a basement or interior room without windows.",
-            "WILDFIRE": "Evacuate immediately if instructed. Protect yourself from smoke.",
-            "TSUNAMI": "Move to high ground. Tsunami waves can arrive quickly after an earthquake.",
-            "BLIZZARD": "Stay indoors, conserve energy, and avoid unnecessary travel.",
-            "DROUGHT": "Conserve water and seek community assistance for water distribution.",
-            "CRIME": "Report criminal activity to local law enforcement.",
-            "ARSON": "If you suspect arson, contact the fire department immediately.",
-            "CIVIL DISORDER": "Avoid areas of unrest and follow guidance from authorities.",
-            "TERRORISM": "Remain vigilant and report suspicious activity to authorities.",
-            "WAR": "Follow government directives and seek shelter.",
-            "BIOLOGICAL / CHEMICAL THREAT": "Evacuate the area and contact emergency services.",
-            "CYBER ATTACKS": "Secure your online accounts and contact IT support.",
-            "CHRONIC HOMELESSNESS": "Long-term homelessness often involves complex challenges such as mental health or substance abuse.",
-            "TRANSITIONAL HOMELESSNESS": "A temporary state of homelessness often caused by financial crises.",
-            "EPISODIC HOMELESSNESS": "Periods of housing instability that occur intermittently.",
-            "HIDDEN HOMELESSNESS": "Individuals not visible to services, such as couch surfing.",
-            "SITUATIONAL HOMELESSNESS": "A short-term situation caused by a specific crisis like a job loss.",
-            "FAMILY HOMELESSNESS": "Entire family units experiencing homelessness, often requiring child-focused resources.",
-            "YOUTH HOMELESSNESS": "Young individuals under 24 experiencing homelessness, often linked to family rejection or aging out of foster care.",
-            "VETERAN HOMELESSNESS": "Veterans experiencing homelessness often due to mental health challenges or lack of support.",
-            "RURAL HOMELESSNESS": "Homelessness in less densely populated areas, often without visible shelters.",
-            "URBAN HOMELESSNESS": "Homelessness in cities, including living on streets or in shelters."
-        };
+            "HOUSE FIRE": "Call 911 immediately and evacuate. Stay outside until cleared by authorities.",
+            "FOREST FIRE": "Evacuate following emergency instructions. Avoid inhaling smoke.",
+            "ELECTRICAL FIRE": "Turn off the power source if safe. Use a fire extinguisher designed for electrical fires.",
+            "VEHICLE FIRE": "Exit the vehicle immediately and move to safety. Call 911.",
+            "INDUSTRIAL FIRE": "Follow workplace safety protocols and evacuate to designated areas.",
 
-        const crisisEvents = Object.keys(descriptions);
-        const homelessnessTypes = [
-            "CHRONIC HOMELESSNESS", "TRANSITIONAL HOMELESSNESS", "EPISODIC HOMELESSNESS",
-            "HIDDEN HOMELESSNESS", "SITUATIONAL HOMELESSNESS", "FAMILY HOMELESSNESS",
-            "YOUTH HOMELESSNESS", "VETERAN HOMELESSNESS", "RURAL HOMELESSNESS", "URBAN HOMELESSNESS"
-        ];
-        const naturalDisasters = [
-            "EARTHQUAKE", "FLOOD", "HURRICANE", "TORNADO", "WILDFIRE", "TSUNAMI", "BLIZZARD", "DROUGHT"
-        ];
-        const manMadeDisasters = [
-            "CRIME", "ARSON", "CIVIL DISORDER", "TERRORISM", "WAR", "BIOLOGICAL / CHEMICAL THREAT", "CYBER ATTACKS"
-        ];
+            "HEART ATTACK": "Symptoms include chest pain and shortness of breath. Call 911 immediately.",
+            "STROKE": "Remember FAST: Face drooping, Arm weakness, Speech difficulty, Time to call 911.",
+            "SEVERE INJURY": "Apply pressure to bleeding wounds and keep the injured person still. Call 911.",
+            "ALLERGIC REACTION": "Symptoms include swelling and difficulty breathing. Use an EpiPen if available and call 911.",
+            "SEIZURE": "Clear the area of hazards. Do not restrain the person. Call for help if it lasts more than 5 minutes.",
+            "BREATHING DIFFICULTY": "Administer prescribed medications if available. Call 911.",
+            "POISONING": "Call Poison Control at 1-800-222-1222 or seek emergency help immediately.",
+
+            "FOOD INSECURITY": "Contact local food banks for assistance.",
+            "LACK OF ACCESS TO MEALS": "Seek programs offering free meals or community support.",
+            "MALNUTRITION": "Consult healthcare providers for nutrition-related programs.",
+            "EMERGENCY FOOD SUPPLIES": "Locate emergency distribution centers for immediate aid.",
+
+            "PHYSICAL ABUSE": "Physical abuse involves bodily harm. Call 911 or a support hotline for immediate help.",
+            "EMOTIONAL ABUSE": "Emotional abuse may involve manipulation or control. Counseling services are available.",
+            "FINANCIAL ABUSE": "Financial abuse involves controlling someone's access to financial resources. Seek advocacy support.",
+            "SEXUAL ABUSE": "Sexual abuse requires immediate attention. Contact a sexual assault hotline for confidential assistance.",
+            "COERCIVE CONTROL": "Coercive control includes patterns of behavior that dominate or exploit. Plan a safe exit strategy.",
+
+            "ASSAULT": "Assault includes physical attacks. Seek medical help and contact authorities.",
+            "BURGLARY": "Burglary involves unauthorized entry. File a police report and avoid disturbing the scene.",
+            "THEFT": "Theft involves stolen property. Report incidents to law enforcement.",
+            "VANDALISM": "Vandalism includes property damage. Document the damage and report it to authorities.",
+            "ACTIVE SHOOTER": "In an active shooter situation, run, hide, and fight as a last resort. Call 911.",
+            "KIDNAPPING": "Report missing persons or suspected abductions to law enforcement immediately.",
+            "STALKING": "Stalking involves repeated harassment. Document incidents and contact authorities.",
+
+            "SUICIDAL THOUGHTS": "If someone is suicidal, call 988 or a suicide prevention hotline immediately.",
+            "ANXIETY ATTACK": "Encourage slow, deep breaths and provide a calm environment.",
+            "SEVERE DEPRESSION": "Severe depression can require immediate intervention. Contact a counselor or hotline.",
+            "PSYCHOTIC EPISODE": "Psychotic episodes may involve hallucinations or delusions. Call 911 if safety is a concern.",
+            "SUBSTANCE ABUSE CRISIS": "Substance abuse crises require urgent care. Contact a substance abuse hotline.",
+            "PTSD EPISODE": "Post-traumatic stress episodes can be alleviated with grounding techniques and professional help.",
+
+            "LOST IN A CITY": "Use GPS or public transportation apps to find your way.",
+            "LOST IN THE WILDERNESS": "Stay in one place and make yourself visible to rescuers.",
+            "LOST ON PUBLIC TRANSIT": "Contact transit staff or use station maps for guidance.",
+            "LOST WHILE TRAVELING ABROAD": "Reach out to local embassies or law enforcement for assistance."
+        };
 
         function showCrisisOptions() {
             const grid = document.getElementById("crisis-options");
             const descriptionBox = document.getElementById("description-box");
-            grid.innerHTML = ""; // Clear buttons
-            descriptionBox.style.display = "none"; // Hide the description box
-            crisisEvents.forEach(event => {
+            grid.innerHTML = "";
+            descriptionBox.style.display = "none";
+
+            Object.keys(descriptions).forEach(event => {
                 const button = document.createElement("button");
                 button.className = "crisis-button";
                 button.textContent = event;
                 button.onclick = () => handleCrisis(event);
                 grid.appendChild(button);
             });
-            grid.style.display = "grid"; // Show buttons
+            grid.style.display = "grid";
         }
 
         function handleCrisis(eventName) {
             const grid = document.getElementById("crisis-options");
             const descriptionBox = document.getElementById("description-box");
             descriptionBox.style.display = "block";
-            if (eventName === "HOMELESSNESS") {
+
+            const subcategories = Object.keys(subDescriptions).filter(key => key.startsWith(eventName));
+            if (subcategories.length > 0) {
                 grid.innerHTML = "";
-                homelessnessTypes.forEach(type => {
+                subcategories.forEach(sub => {
                     const button = document.createElement("button");
                     button.className = "crisis-button";
-                    button.textContent = type;
-                    button.onclick = () => showDescription(type);
+                    button.textContent = sub;
+                    button.onclick = () => showDescription(sub);
                     grid.appendChild(button);
                 });
-                descriptionBox.innerHTML = descriptions["HOMELESSNESS"];
-            } else if (eventName === "NATURAL DISASTER") {
-                grid.innerHTML = "";
-                naturalDisasters.forEach(type => {
-                    const button = document.createElement("button");
-                    button.className = "crisis-button";
-                    button.textContent = type;
-                    button.onclick = () => showDescription(type);
-                    grid.appendChild(button);
-                });
-                descriptionBox.innerHTML = descriptions["NATURAL DISASTER"];
-            } else if (eventName === "MAN MADE DISASTER") {
-                grid.innerHTML = "";
-                manMadeDisasters.forEach(type => {
-                    const button = document.createElement("button");
-                    button.className = "crisis-button";
-                    button.textContent = type;
-                    button.onclick = () => showDescription(type);
-                    grid.appendChild(button);
-                });
-                descriptionBox.innerHTML = descriptions["MAN MADE DISASTER"];
-            } else {
-                showDescription(eventName);
             }
+            showDescription(eventName);
         }
 
         function showDescription(eventName) {
             const descriptionBox = document.getElementById("description-box");
-            descriptionBox.style.display = "block";
             descriptionBox.innerHTML = subDescriptions[eventName] || descriptions[eventName] || "No description available.";
         }
     </script>
