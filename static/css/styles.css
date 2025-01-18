@@ -19,27 +19,30 @@ h1 {
     color: #333; /* Dark gray text color */
 }
 
-/* Red Circle Button */
+/* Squircle Red Crisis Button */
 .circle-button {
-    width: 200px; /* Fixed width */
-    height: 200px; /* Fixed height */
-    background-color: #8B0000; /* Deep red background */
-    color: white; /* White text color */
-    font-size: 24px; /* Large text size */
+    width: 200px;
+    height: 200px;
+    background-color: #8B0000; /* Deep red */
+    color: white;
+    font-size: 24px;
     font-weight: bold;
-    border: none; /* No border */
-    border-radius: 50%; /* Fully rounded for circle shape */
-    cursor: pointer; /* Pointer cursor on hover */
+    border: none;
+    border-radius: 35%; /* Creates the squircle shape */
+    cursor: pointer;
     text-align: center;
-    display: flex; /* Flexbox for centering text */
-    align-items: center; /* Vertical centering */
-    justify-content: center; /* Horizontal centering */
-    margin-top: 20px; /* Spacing above the button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effects */
 }
 
-/* Red Circle Button Hover Effect */
+/* Squircle Red Crisis Button Hover Effect */
 .circle-button:hover {
     background-color: #B22222; /* Brighter red on hover */
+    transform: scale(1.05); /* Slight zoom effect on hover */
 }
 
 /* Grid Container for Buttons */
