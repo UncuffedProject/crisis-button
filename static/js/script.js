@@ -125,6 +125,7 @@ async function showDescription(subcategory) {
                 <p><strong>${resource.name}</strong></p>
                 <p>Address: ${resource.address}</p>
                 <p>Phone: ${resource.phone}</p>
+                <p>Website: <a href="${resource.website}" target="_blank">${resource.website || "Not available"}</a></p>
             `;
             descriptionBox.appendChild(resourceElement);
         });
