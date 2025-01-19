@@ -79,16 +79,19 @@ def get_local_resources():
         "key": GOOGLE_API_KEY,
         "cx": GOOGLE_CSE_ID,
         "q": query,
-        "num": 5  # Number of results to return
+        "num": 5
     }
 
+    # Make the API request
     response = requests.get(url, params=params)
     if response.status_code != 200:
+        print("Google API Error:", response.text)  # Log the error
         return jsonify({"error": "Failed to fetch resources"}), 500
 
-    search_results = response.json().get("items", [])
-    resources = [{"name": item["title"], "link": item["link"]} for item in search_results]
+    search_results = response.json()
+    print("Google API Response:", search_results)  # Log the full response
 
+    resources = [{"name": item["title"], "link": item["link"]} for item in search_results.get("items", [])]
     return jsonify({"resources": resources})
 
 @app.route("/")
