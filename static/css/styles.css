@@ -77,10 +77,7 @@ h1 {
 
 /* Description Box Styles */
 #description-box {
-    text-align: center; /* Centers the text */
     margin-top: 20px; /* Space above the description box */
-    margin: 10px auto; /* Adds spacing and centers horizontally */
-    line-height: 1.6; /* Improves readability */
     padding: 15px; /* Inner padding */
     background: white; /* White background */
     border-radius: 10px; /* Rounded corners */
@@ -88,4 +85,11 @@ h1 {
     width: 90%; /* Responsive width */
     max-width: 600px; /* Maximum width */
     font-size: 16px; /* Text size */
+}
+
+.description {
+    text-align: center;
+    margin: 0 auto; /* Centers the element horizontally */
+    max-width: 80%; /* Optional: Limits the width for better readability */
+    line-height: 1.6; /* Optional: Improves line spacing */
 }

@@ -32,6 +32,7 @@ def get_place_details(place_name, location):
     """
     Fetch place details such as address, phone, and website using Google Places API.
     """
+    # Step 1: Perform a Text Search to get the place_id
     places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
     params = {
         "query": place_name,
@@ -43,11 +44,35 @@ def get_place_details(place_name, location):
 
     if response.status_code == 200 and data.get("results"):
         place = data["results"][0]
+        place_id = place.get("place_id")
+        address = place.get("formatted_address", "Address not available")
+
+        # Step 2: If place_id is available, fetch additional details
+        if place_id:
+            details_url = "https://maps.googleapis.com/maps/api/place/details/json"
+            details_params = {
+                "place_id": place_id,
+                "fields": "formatted_address,formatted_phone_number,website",
+                "key": GOOGLE_API_KEY,
+            }
+            details_response = requests.get(details_url, params=details_params)
+            details_data = details_response.json()
+
+            if details_response.status_code == 200 and details_data.get("result"):
+                details = details_data["result"]
+                return {
+                    "address": details.get("formatted_address", address),
+                    "phone": details.get("formatted_phone_number", "Phone not available"),
+                    "website": details.get("website", "Website not available"),
+                }
+
+        # Fallback if no details are found
         return {
-            "address": place.get("formatted_address", "Address not available"),
-            "phone": place.get("formatted_phone_number", "Phone not available"),
-            "website": place.get("website", "Website not available"),
+            "address": address,
+            "phone": "Phone not available",
+            "website": "Website not available",
         }
+
     return {
         "address": "Address not available",
         "phone": "Phone not available",
