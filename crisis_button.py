@@ -150,10 +150,38 @@ def get_description():
     description = find_description(DISASTER_DESCRIPTIONS, subcategory)
     return jsonify({"description": description or "No description available."})
 
+def get_place_details(place_name, location):
+    """
+    Use Google Places API to fetch details for a specific place.
+    """
+    places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+    params = {
+        "query": place_name,
+        "location": location,
+        "key": GOOGLE_API_KEY,
+    }
+    response = requests.get(places_url, params=params)
+    data = response.json()
+
+    if response.status_code == 200 and data.get("results"):
+        place = data["results"][0]
+        details = {
+            "address": place.get("formatted_address", "Address not available"),
+            "phone": place.get("formatted_phone_number", "Phone not available"),
+            "website": place.get("website", "Website not available"),
+        }
+        return details
+    return {
+        "address": "Address not available",
+        "phone": "Phone not available",
+        "website": "Website not available",
+    }
+
 @app.route("/get_local_resources", methods=["POST"])
 def get_local_resources():
     """
-    Fetch local resources for a given disaster and location using Google Custom Search.
+    Fetch local resources for a given disaster and location using Google Custom Search
+    and Places API.
     """
     disaster = request.json.get("disaster")
     latitude = request.json.get("latitude")
@@ -169,40 +197,35 @@ def get_local_resources():
 
     # Build the search query
     query = f"{disaster} relief resources near {location_name}"
-    url = "https://www.googleapis.com/customsearch/v1"
+    search_url = "https://www.googleapis.com/customsearch/v1"
     params = {
         "key": GOOGLE_API_KEY,
         "cx": GOOGLE_CSE_ID,
         "q": query,
-        "num": 5
+        "num": 5,
     }
 
-    response = requests.get(url, params=params)
-    search_results = response.json().get("items", [])
+    search_response = requests.get(search_url, params=params)
+    search_results = search_response.json().get("items", [])
 
-    if response.status_code != 200 or not search_results:
+    if search_response.status_code != 200 or not search_results:
         return jsonify({"error": "Failed to fetch resources"}), 500
 
     resources = []
     for item in search_results:
+        resource_name = item.get("title")
+        link = item.get("link")
+        location = f"{latitude},{longitude}"
+
+        # Get additional details using Places API
+        place_details = get_place_details(resource_name, location)
         resource = {
-            "name": item.get("title"),
-            "link": item.get("link"),
+            "name": resource_name,
+            "link": link,
+            "address": place_details["address"],
+            "phone": place_details["phone"],
+            "website": place_details["website"],
         }
-
-        # Additional fields from structured data (if available)
-        if "pagemap" in item:
-            pagemap = item["pagemap"]
-            resource["location"] = next(
-                (info.get("content") for info in pagemap.get("metatags", []) if "address" in info), "Location not available"
-            )
-            resource["phone"] = next(
-                (info.get("content") for info in pagemap.get("metatags", []) if "telephone" in info), "Phone not available"
-            )
-            resource["website"] = next(
-                (info.get("website") for info in pagemap.get("organization", []) if "website" in info), resource["link"]
-            )
-
         resources.append(resource)
 
     return jsonify({"resources": resources})
