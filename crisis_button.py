@@ -121,20 +121,36 @@ def get_description():
 @app.route("/get_local_resources", methods=["POST"])
 def get_local_resources():
     """
-    Fetch local resources for a given disaster and location using Google Custom Search
-    and Places API.
+    Fetch local resources for a given disaster using Custom Search and Places APIs.
     """
     disaster = request.json.get("disaster")
     latitude = request.json.get("latitude")
     longitude = request.json.get("longitude")
 
+    # Validate input
     if not disaster or not latitude or not longitude:
         return jsonify({"error": "Missing required parameters"}), 400
 
-    # Convert GPS coordinates to a human-readable location
+    # Get location name from latitude and longitude
     location_name = get_location_name(latitude, longitude)
     if not location_name:
         return jsonify({"error": "Unable to determine location from coordinates"}), 500
+
+    # Fetch resources from Custom Search API
+    search_results = search_resources(disaster, location_name)
+    if not search_results:
+        return jsonify({"error": "No resources found"}), 404
+
+    # Fetch details for each resource using Places API
+    resources = []
+    for item in search_results:
+        resource_name = item.get("title")
+        link = item.get("link")
+        place_details = get_place_details(resource_name, f"{latitude},{longitude}")
+        resources.append({**place_details, "name": resource_name, "link": link})
+
+    # Return the resources as a JSON response
+    return jsonify({"resources": resources})
 
 if __name__ == "__main__":
     app.run(debug=True)
