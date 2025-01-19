@@ -147,6 +147,7 @@ def get_description():
     # Search for description in DISASTER_DESCRIPTIONS
     def find_description(data, target):
         for key, value in data.items():
+            print(f"Checking key: {key}")  # Debug log
             if key == target:
                 return value
             if isinstance(value, dict):
