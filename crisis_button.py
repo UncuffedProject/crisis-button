@@ -9,6 +9,12 @@ from disasters.disaster_descriptions.mental_health_crisis_descriptions import mo
 
 import requests  # For making HTTP requests to external APIs
 
+import os  # For accessing environment variables
+
+# Fetch API Key and CSE ID from environment variables
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
+
 app = Flask(__name__)
 
 DISASTER_DESCRIPTIONS = {
@@ -52,6 +58,38 @@ DISASTER_DESCRIPTIONS = {
         "Other Mental Health Crises": other_mental_health_crises,
     },
 }
+
+@app.route("/get_local_resources", methods=["POST"])
+def get_local_resources():
+    """
+    Fetch local resources for a given disaster and location using Google Custom Search.
+    """
+    disaster = request.json.get("disaster")
+    latitude = request.json.get("latitude")
+    longitude = request.json.get("longitude")
+
+    if not disaster or not latitude or not longitude:
+        return jsonify({"error": "Missing required parameters"}), 400
+
+    # Build the search query
+    location = f"{latitude},{longitude}"
+    query = f"local resources for {disaster} near {location}"
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        "key": GOOGLE_API_KEY,
+        "cx": GOOGLE_CSE_ID,
+        "q": query,
+        "num": 5  # Number of results to return
+    }
+
+    response = requests.get(url, params=params)
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch resources"}), 500
+
+    search_results = response.json().get("items", [])
+    resources = [{"name": item["title"], "link": item["link"]} for item in search_results]
+
+    return jsonify({"resources": resources})
 
 @app.route("/")
 def home():
@@ -116,28 +154,6 @@ def get_description():
 
     description = find_description(DISASTER_DESCRIPTIONS, subcategory)
     return jsonify({"description": description or "No description available."})
-
-@app.route("/get_local_resources", methods=["POST"])
-def get_local_resources():
-    """
-    Fetch local resources for a given disaster and location.
-    """
-    disaster = request.json.get("disaster")
-    latitude = request.json.get("latitude")
-    longitude = request.json.get("longitude")
-
-    if not disaster or not latitude or not longitude:
-        return jsonify({"error": "Missing required parameters"}), 400
-
-    # Example: Use ChatGPT or another API to fetch local resources
-    query = f"Find local resources for {disaster} near latitude {latitude} and longitude {longitude}"
-    
-    # Mock response (replace this with actual API call logic)
-    resources = [
-        {"name": "Local Emergency Center", "address": "123 Main St", "phone": "555-123-4567"},
-        {"name": "Disaster Relief Organization", "address": "456 Elm St", "phone": "555-987-6543"}
-    ]
-    return jsonify({"resources": resources})
 
 if __name__ == "__main__":
     app.run(debug=True)
