@@ -19,41 +19,40 @@ The Crisis Button Project is a web application designed to provide **Community R
 ```plaintext
 crisis_button_project/
 │
-├── crisis_button.py           # Main Flask application
-├── LICENSE                    # License file (GPL-3.0)
-├── ping_render.py             # Render-specific ping script
-├── README.md                  # Project documentation
-├── requirements.txt           # Python dependencies
-├── runtime/                   # Deployment-specific files
-│   ├── Procfile               # Process file for Render
-│   └── runtime.txt            # Python runtime specification
+├── crisis_button.py                                 # Main Flask application
+├── LICENSE                                          # License file (GPL-3.0)
+├── ping_render.py                                   # Render-specific ping script
+├── README.md                                        # Project documentation
+├── requirements.txt                                 # Python dependencies
+├── Procfile                                         # Process file for Render
+├── runtime.txt                                      # Python runtime specification
 │
-├── disasters/                 # Disaster-related logic and data
-│   ├── __init__.py            # Package initialization file
-│   ├── disaster_types.py      # File containing all crisis categories
-│   ├── disaster_descriptions/ # Organized disaster descriptions
+├── disasters/                                       # Disaster-related logic and data
+│   ├── __init__.py                                  # Package initialization file
+│   ├── disaster_types.py                            # File containing all crisis categories
+│   ├── disaster_descriptions/                       # Organized disaster descriptions
 │   │   ├── __init__.py
 │   │   ├── natural_disaster_descriptions.py
 │   │   ├── man_made_disaster_descriptions.py
 │   │   ├── medical_emergency_descriptions.py
 │   │   ├── mental_health_crisis_descriptions.py
-│   │   └── disaster_descriptions.py  # Aggregated descriptions
-│   ├── disaster_names/        # Organized disaster names
+│   │   └── disaster_descriptions.py                 # Aggregated descriptions
+│   ├── disaster_names/                              # Organized disaster names
 │   │   ├── __init__.py
 │   │   ├── natural_disaster_names.py
 │   │   ├── man_made_disaster_names.py
 │   │   ├── medical_emergency_names.py
 │   │   └── mental_health_crisis_names.py
 │
-├── static/                    # Static files (CSS, JS, images)
+├── static/                                          # Static files (CSS, JS, images)
 │   ├── css/
-│   │   └── styles.css         # Stylesheet for the project
-│   ├── images/                # Images (optional)
+│   │   └── styles.css                               # Stylesheet for the project
+│   ├── images/                                      # Images (optional)
 │   └── js/
-│       └── script.js          # JavaScript for interactivity
+│       └── script.js                                # JavaScript for interactivity
 │
-└── templates/                 # HTML templates
-    └── index.html             # Main HTML file
+└── templates/                                       # HTML templates
+    └── index.html                                   # Main HTML file
 ```
 
 ---
