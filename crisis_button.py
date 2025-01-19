@@ -7,13 +7,7 @@ from disasters.disaster_descriptions.man_made_disaster_descriptions import indus
 from disasters.disaster_descriptions.medical_emergency_descriptions import cardiovascular_emergencies, respiratory_emergencies, neurological_emergencies, trauma_related_emergencies, toxicological_emergencies, metabolic_emergencies, obstetric_gynecological_emergencies
 from disasters.disaster_descriptions.mental_health_crisis_descriptions import mood_disorders, anxiety_disorders, psychotic_disorders, personality_disorders, behavioral_and_developmental_disorders, substance_related_crises, suicidal_and_self_harm_crises, eating_disorders, other_mental_health_crises
 
-import requests  # For making HTTP requests to external APIs
-
-import os  # For accessing environment variables
-
-# Fetch API Key and CSE ID from environment variables
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
+from google_api_utils import get_location_name, get_place_details, search_resources
 
 app = Flask(__name__)
 
@@ -58,32 +52,6 @@ DISASTER_DESCRIPTIONS = {
         "Other Mental Health Crises": other_mental_health_crises,
     },
 }
-
-def get_location_name(latitude, longitude):
-    """
-    Use Google Geocoding API to convert latitude and longitude to a location name.
-    """
-    geocoding_url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {
-        "latlng": f"{latitude},{longitude}",
-        "key": GOOGLE_API_KEY
-    }
-    response = requests.get(geocoding_url, params=params)
-    data = response.json()
-
-    if response.status_code == 200 and data.get("results"):
-        # Extract city and state
-        address_components = data["results"][0]["address_components"]
-        locality = next(
-            (comp["long_name"] for comp in address_components if "locality" in comp["types"]),
-            None
-        )
-        state = next(
-            (comp["long_name"] for comp in address_components if "administrative_area_level_1" in comp["types"]),
-            None
-        )
-        return f"{locality}, {state}" if locality and state else data["results"][0]["formatted_address"]
-    return None
 
 @app.route("/")
 def home():
@@ -150,33 +118,6 @@ def get_description():
     description = find_description(DISASTER_DESCRIPTIONS, subcategory)
     return jsonify({"description": description or "No description available."})
 
-def get_place_details(place_name, location):
-    """
-    Use Google Places API to fetch details for a specific place.
-    """
-    places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
-    params = {
-        "query": place_name,
-        "location": location,
-        "key": GOOGLE_API_KEY,
-    }
-    response = requests.get(places_url, params=params)
-    data = response.json()
-
-    if response.status_code == 200 and data.get("results"):
-        place = data["results"][0]
-        details = {
-            "address": place.get("formatted_address", "Address not available"),
-            "phone": place.get("formatted_phone_number", "Phone not available"),
-            "website": place.get("website", "Website not available"),
-        }
-        return details
-    return {
-        "address": "Address not available",
-        "phone": "Phone not available",
-        "website": "Website not available",
-    }
-
 @app.route("/get_local_resources", methods=["POST"])
 def get_local_resources():
     """
@@ -194,41 +135,6 @@ def get_local_resources():
     location_name = get_location_name(latitude, longitude)
     if not location_name:
         return jsonify({"error": "Unable to determine location from coordinates"}), 500
-
-    # Build the search query
-    query = f"{disaster} relief resources near {location_name}"
-    search_url = "https://www.googleapis.com/customsearch/v1"
-    params = {
-        "key": GOOGLE_API_KEY,
-        "cx": GOOGLE_CSE_ID,
-        "q": query,
-        "num": 5,
-    }
-
-    search_response = requests.get(search_url, params=params)
-    search_results = search_response.json().get("items", [])
-
-    if search_response.status_code != 200 or not search_results:
-        return jsonify({"error": "Failed to fetch resources"}), 500
-
-    resources = []
-    for item in search_results:
-        resource_name = item.get("title")
-        link = item.get("link")
-        location = f"{latitude},{longitude}"
-
-        # Get additional details using Places API
-        place_details = get_place_details(resource_name, location)
-        resource = {
-            "name": resource_name,
-            "link": link,
-            "address": place_details["address"],
-            "phone": place_details["phone"],
-            "website": place_details["website"],
-        }
-        resources.append(resource)
-
-    return jsonify({"resources": resources})
 
 if __name__ == "__main__":
     app.run(debug=True)
