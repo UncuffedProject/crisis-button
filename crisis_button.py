@@ -7,6 +7,8 @@ from disasters.disaster_descriptions.man_made_disaster_descriptions import indus
 from disasters.disaster_descriptions.medical_emergency_descriptions import cardiovascular_emergencies, respiratory_emergencies, neurological_emergencies, trauma_related_emergencies, toxicological_emergencies, metabolic_emergencies, obstetric_gynecological_emergencies
 from disasters.disaster_descriptions.mental_health_crisis_descriptions import mood_disorders, anxiety_disorders, psychotic_disorders, personality_disorders, behavioral_and_developmental_disorders, substance_related_crises, suicidal_and_self_harm_crises, eating_disorders, other_mental_health_crises
 
+import requests  # For making HTTP requests to external APIs
+
 app = Flask(__name__)
 
 DISASTER_DESCRIPTIONS = {
@@ -114,6 +116,28 @@ def get_description():
 
     description = find_description(DISASTER_DESCRIPTIONS, subcategory)
     return jsonify({"description": description or "No description available."})
+
+@app.route("/get_local_resources", methods=["POST"])
+def get_local_resources():
+    """
+    Fetch local resources for a given disaster and location.
+    """
+    disaster = request.json.get("disaster")
+    latitude = request.json.get("latitude")
+    longitude = request.json.get("longitude")
+
+    if not disaster or not latitude or not longitude:
+        return jsonify({"error": "Missing required parameters"}), 400
+
+    # Example: Use ChatGPT or another API to fetch local resources
+    query = f"Find local resources for {disaster} near latitude {latitude} and longitude {longitude}"
+    
+    # Mock response (replace this with actual API call logic)
+    resources = [
+        {"name": "Local Emergency Center", "address": "123 Main St", "phone": "555-123-4567"},
+        {"name": "Disaster Relief Organization", "address": "456 Elm St", "phone": "555-987-6543"}
+    ]
+    return jsonify({"resources": resources})
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,7 +1,7 @@
 # Crisis Button Project
 
 ## **Overview**
-The Crisis Button Project is a web application designed to provide **Community Response in Situations Involving Stress**. The app offers a categorized list of crisis events, subcategories, and detailed descriptions to help users access relevant resources and information during emergencies.
+The Crisis Button Project is a web application designed to provide **Community Response in Situations Involving Stress**. The app offers a categorized list of crisis events, subcategories, detailed descriptions, and now includes local resources to help users access relevant services during emergencies.
 
 ---
 
@@ -9,6 +9,7 @@ The Crisis Button Project is a web application designed to provide **Community R
 - **Interactive UI**: A clean, mobile-friendly interface with a dynamic red crisis button.
 - **Crisis Categories**: Comprehensive list of crisis events, including natural disasters, medical emergencies, and more.
 - **Subcategories and Descriptions**: Detailed breakdown and descriptions for each crisis event.
+- **Local Resources Integration**: Fetches and displays nearby resources relevant to the selected crisis using the Geolocation API.
 - **Data Separation**: Modular design with crisis data stored in separate Python files for easy maintenance.
 - **Extensibility**: Built using Flask, allowing easy addition of new features.
 - **Deployment Ready**: Includes Render-compatible files for easy deployment.
@@ -61,7 +62,7 @@ crisis_button_project/
 - **Frontend**:
   - HTML
   - CSS
-  - JavaScript
+  - JavaScript (with Geolocation API)
 - **Backend**:
   - Python
   - Flask
@@ -69,6 +70,7 @@ crisis_button_project/
   - Render
 - **Other Libraries**:
   - `geopy` (for location-based features)
+  - `requests` (for fetching external resources)
 
 ---
 
@@ -112,8 +114,9 @@ Follow these steps to run the project locally:
 2. **Explore Categories**:
    - Select a category to view related subcategories.
 
-3. **View Descriptions**:
-   - Click on a subcategory to see detailed descriptions and information.
+3. **View Descriptions and Resources**:
+   - Click on a subcategory to see detailed descriptions.
+   - If it's the last-level crisis, the app will also fetch and display local resources based on your device's location.
 
 ---
 

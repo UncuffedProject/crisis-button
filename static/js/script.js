@@ -1,3 +1,17 @@
+// Function to get the user's current location
+async function getUserLocation() {
+    return new Promise((resolve, reject) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => resolve(position.coords),
+                error => reject(error)
+            );
+        } else {
+            reject("Geolocation is not supported by this browser.");
+        }
+    });
+}
+
 // Function to show top-level categories
 async function showCategories() {
     try {
@@ -75,22 +89,49 @@ async function handleSubcategoryClick(subcategory) {
     }
 }
 
-// Function to show the description for a selected subcategory
+// Function to show the description for a selected subcategory and fetch local resources
 async function showDescription(subcategory) {
     try {
-        const response = await fetch("/get_description", {
+        // Fetch the description
+        const descriptionResponse = await fetch("/get_description", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ subcategory })
         });
-        if (!response.ok) throw new Error("Failed to fetch description.");
+        if (!descriptionResponse.ok) throw new Error("Failed to fetch description.");
 
-        const data = await response.json();
+        const descriptionData = await descriptionResponse.json();
         const descriptionBox = document.getElementById("description-box");
-        descriptionBox.textContent = data.description || "No description available.";
+        descriptionBox.innerHTML = `<p>${descriptionData.description || "No description available."}</p>`;
+
+        // Fetch local resources
+        const coords = await getUserLocation();
+        const resourcesResponse = await fetch("/get_local_resources", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                disaster: subcategory,
+                latitude: coords.latitude,
+                longitude: coords.longitude
+            })
+        });
+        if (!resourcesResponse.ok) throw new Error("Failed to fetch local resources.");
+
+        const resourcesData = await resourcesResponse.json();
+        descriptionBox.innerHTML += `<h3>Local Resources for ${subcategory}</h3>`;
+        resourcesData.resources.forEach(resource => {
+            const resourceElement = document.createElement("div");
+            resourceElement.innerHTML = `
+                <p><strong>${resource.name}</strong></p>
+                <p>Address: ${resource.address}</p>
+                <p>Phone: ${resource.phone}</p>
+            `;
+            descriptionBox.appendChild(resourceElement);
+        });
+
         descriptionBox.style.display = "block";
     } catch (error) {
-        console.error("Error loading description:", error);
-        alert("Failed to load description. Please try again.");
+        console.error("Error loading description and resources:", error);
+        alert("Failed to load description and resources. Please try again.");
     }
 }
