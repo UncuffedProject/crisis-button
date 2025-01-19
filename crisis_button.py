@@ -85,42 +85,6 @@ def get_location_name(latitude, longitude):
         return f"{locality}, {state}" if locality and state else data["results"][0]["formatted_address"]
     return None
 
-@app.route("/get_local_resources", methods=["POST"])
-def get_local_resources():
-    """
-    Fetch local resources for a given disaster and location using Google Custom Search.
-    """
-    disaster = request.json.get("disaster")
-    latitude = request.json.get("latitude")
-    longitude = request.json.get("longitude")
-
-    if not disaster or not latitude or not longitude:
-        return jsonify({"error": "Missing required parameters"}), 400
-
-    # Convert GPS coordinates to a human-readable location
-    location_name = get_location_name(latitude, longitude)
-    if not location_name:
-        return jsonify({"error": "Unable to determine location from coordinates"}), 500
-
-    # Build the search query
-    query = f"{disaster} relief resources near {location_name}"
-    url = "https://www.googleapis.com/customsearch/v1"
-    params = {
-        "key": GOOGLE_API_KEY,
-        "cx": GOOGLE_CSE_ID,
-        "q": query,
-        "num": 5
-    }
-
-    response = requests.get(url, params=params)
-    search_results = response.json().get("items", [])
-
-    if response.status_code != 200 or not search_results:
-        return jsonify({"error": "Failed to fetch resources"}), 500
-
-    resources = [{"name": item["title"], "link": item["link"]} for item in search_results]
-    return jsonify({"resources": resources})
-
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -185,6 +149,63 @@ def get_description():
 
     description = find_description(DISASTER_DESCRIPTIONS, subcategory)
     return jsonify({"description": description or "No description available."})
+
+@app.route("/get_local_resources", methods=["POST"])
+def get_local_resources():
+    """
+    Fetch local resources for a given disaster and location using Google Custom Search.
+    """
+    disaster = request.json.get("disaster")
+    latitude = request.json.get("latitude")
+    longitude = request.json.get("longitude")
+
+    if not disaster or not latitude or not longitude:
+        return jsonify({"error": "Missing required parameters"}), 400
+
+    # Convert GPS coordinates to a human-readable location
+    location_name = get_location_name(latitude, longitude)
+    if not location_name:
+        return jsonify({"error": "Unable to determine location from coordinates"}), 500
+
+    # Build the search query
+    query = f"{disaster} relief resources near {location_name}"
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        "key": GOOGLE_API_KEY,
+        "cx": GOOGLE_CSE_ID,
+        "q": query,
+        "num": 5
+    }
+
+    response = requests.get(url, params=params)
+    search_results = response.json().get("items", [])
+
+    if response.status_code != 200 or not search_results:
+        return jsonify({"error": "Failed to fetch resources"}), 500
+
+    resources = []
+    for item in search_results:
+        resource = {
+            "name": item.get("title"),
+            "link": item.get("link"),
+        }
+
+        # Additional fields from structured data (if available)
+        if "pagemap" in item:
+            pagemap = item["pagemap"]
+            resource["location"] = next(
+                (info.get("content") for info in pagemap.get("metatags", []) if "address" in info), "Location not available"
+            )
+            resource["phone"] = next(
+                (info.get("content") for info in pagemap.get("metatags", []) if "telephone" in info), "Phone not available"
+            )
+            resource["website"] = next(
+                (info.get("website") for info in pagemap.get("organization", []) if "website" in info), resource["link"]
+            )
+
+        resources.append(resource)
+
+    return jsonify({"resources": resources})
 
 if __name__ == "__main__":
     app.run(debug=True)
