@@ -119,9 +119,10 @@ We welcome contributions to improve this project! To contribute:
 ---
 
 ## **License**
-This project is licensed under the [MIT License](LICENSE).
+License
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
 
 ---
 
 ## **Contact**
-For questions or support, reach out to **[The Uncuffed Project](https://uncuffed.org)**.
+For questions or support, reach out to **[The Uncuffed Project](https://www.TheUncuffedProject.org)**.
