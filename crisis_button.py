@@ -46,5 +46,8 @@ def get_description():
 def ping():
     return "pong", 200
 
+if not category:
+    return jsonify({"error": "Category not provided"}), 400
+
 if __name__ == "__main__":
     app.run(debug=True)
