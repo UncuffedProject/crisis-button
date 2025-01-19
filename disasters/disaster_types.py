@@ -1,5 +1,5 @@
 # Import disaster names and descriptions
-from natural_disaster_names import (
+from disasters.disaster_names.natural_disaster_names import (
     geological_disasters,
     hydrological_disasters,
     meteorological_disasters,
@@ -8,7 +8,7 @@ from natural_disaster_names import (
     space_related_disasters,
     other_disasters
 )
-from natural_disaster_descriptions import (
+from disasters.disaster_descriptions.natural_disaster_descriptions import (
     geological_disasters as geo_desc,
     hydrological_disasters as hydro_desc,
     meteorological_disasters as meteo_desc,

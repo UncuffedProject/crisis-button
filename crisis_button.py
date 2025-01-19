@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
-from disaster_types import DISASTER_TYPES
-from disaster_descriptions import DISASTER_DESCRIPTIONS
+from disasters.disaster_types import DISASTER_TYPES
+from disasters.disaster_descriptions import DISASTER_DESCRIPTIONS
 
 app = Flask(__name__)
 
