@@ -1,66 +1,63 @@
-function showCategories() {
-    fetch("/get_categories")
-        .then(response => response.json())
-        .then(data => {
-            const grid = document.getElementById("grid-container");
-            grid.innerHTML = "";
-            data.categories.forEach(category => {
-                const button = document.createElement("button");
-                button.className = "button";
-                button.textContent = category;
-                button.onclick = () => showSubcategories(category);
-                grid.appendChild(button);
-            });
-            grid.style.display = "grid";
+async function showCategories() {
+    try {
+        const response = await fetch("/get_categories");
+        const data = await response.json();
+
+        const grid = document.getElementById("grid-container");
+        grid.innerHTML = "";
+        data.categories.forEach(category => {
+            const button = document.createElement("button");
+            button.className = "button";
+            button.textContent = category;
+            button.onclick = () => showSubcategories(category);
+            grid.appendChild(button);
         });
+        grid.style.display = "grid";
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+    }
 }
 
-function showSubcategories(category) {
-    fetch("/get_subcategories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ category })
-    })
-        .then(response => response.json())
-        .then(data => {
-            const grid = document.getElementById("grid-container");
-            const descriptionBox = document.getElementById("description-box");
-            grid.innerHTML = "";
-            data.subcategories.forEach(subcategory => {
-                const button = document.createElement("button");
-                button.className = "button";
-                button.textContent = subcategory;
-                button.onclick = () => {
-                    fetch("/get_subcategories", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ category: subcategory })
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.subcategories && data.subcategories.length > 0) {
-                                showSubcategories(subcategory); // Navigate deeper
-                            } else {
-                                showDescription(subcategory); // Display description
-                            }
-                        });
-                };
-                grid.appendChild(button);
-            });
-            descriptionBox.style.display = "none";
+async function showSubcategories(category) {
+    try {
+        const response = await fetch("/get_subcategories", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ category })
         });
+        const data = await response.json();
+
+        const grid = document.getElementById("grid-container");
+        const descriptionBox = document.getElementById("description-box");
+        grid.innerHTML = "";
+
+        data.subcategories.forEach(subcategory => {
+            const button = document.createElement("button");
+            button.className = "button";
+            button.textContent = subcategory;
+            button.onclick = () => showDescription(subcategory);
+            grid.appendChild(button);
+        });
+
+        descriptionBox.style.display = "none";
+    } catch (error) {
+        console.error("Error fetching subcategories:", error);
+    }
 }
 
-function showDescription(subcategory) {
-    fetch("/get_description", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ subcategory })
-    })
-        .then(response => response.json())
-        .then(data => {
-            const descriptionBox = document.getElementById("description-box");
-            descriptionBox.textContent = data.description;
-            descriptionBox.style.display = "block";
+async function showDescription(subcategory) {
+    try {
+        const response = await fetch("/get_description", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ subcategory })
         });
+        const data = await response.json();
+
+        const descriptionBox = document.getElementById("description-box");
+        descriptionBox.textContent = data.description;
+        descriptionBox.style.display = "block";
+    } catch (error) {
+        console.error("Error fetching description:", error);
+    }
 }

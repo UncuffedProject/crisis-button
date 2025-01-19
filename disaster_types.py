@@ -2,22 +2,13 @@
 
 # Import disaster names and descriptions
 from natural_disaster_names import (
-    geological_disasters,
-    hydrological_disasters,
-    meteorological_disasters,
-    climatological_disasters,
-    biological_disasters,
-    space_related_disasters,
-    other_disasters
+    geological_disasters, hydrological_disasters, meteorological_disasters, 
+    climatological_disasters, biological_disasters, space_related_disasters, other_disasters
 )
 from natural_disaster_descriptions import (
-    geological_disasters as geo_desc,
-    hydrological_disasters as hydro_desc,
-    meteorological_disasters as meteo_desc,
-    climatological_disasters as climate_desc,
-    biological_disasters as bio_desc,
-    space_related_disasters as space_desc,
-    other_disasters as other_desc
+    geological_disasters as geo_desc, hydrological_disasters as hydro_desc, 
+    meteorological_disasters as meteo_desc, climatological_disasters as climate_desc, 
+    biological_disasters as bio_desc, space_related_disasters as space_desc, other_disasters as other_desc
 )
 
 # This file contains a comprehensive list of all crisis events categorized for reference.
