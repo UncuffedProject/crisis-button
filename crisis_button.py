@@ -59,6 +59,32 @@ DISASTER_DESCRIPTIONS = {
     },
 }
 
+def get_location_name(latitude, longitude):
+    """
+    Use Google Geocoding API to convert latitude and longitude to a location name.
+    """
+    geocoding_url = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {
+        "latlng": f"{latitude},{longitude}",
+        "key": GOOGLE_API_KEY
+    }
+    response = requests.get(geocoding_url, params=params)
+    data = response.json()
+
+    if response.status_code == 200 and data.get("results"):
+        # Extract city and state
+        address_components = data["results"][0]["address_components"]
+        locality = next(
+            (comp["long_name"] for comp in address_components if "locality" in comp["types"]),
+            None
+        )
+        state = next(
+            (comp["long_name"] for comp in address_components if "administrative_area_level_1" in comp["types"]),
+            None
+        )
+        return f"{locality}, {state}" if locality and state else data["results"][0]["formatted_address"]
+    return None
+
 @app.route("/get_local_resources", methods=["POST"])
 def get_local_resources():
     """
@@ -71,9 +97,13 @@ def get_local_resources():
     if not disaster or not latitude or not longitude:
         return jsonify({"error": "Missing required parameters"}), 400
 
+    # Convert GPS coordinates to a human-readable location
+    location_name = get_location_name(latitude, longitude)
+    if not location_name:
+        return jsonify({"error": "Unable to determine location from coordinates"}), 500
+
     # Build the search query
-    location = f"{latitude},{longitude}"
-    query = f"local resources for {disaster} near {location}"
+    query = f"{disaster} relief resources near {location_name}"
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
         "key": GOOGLE_API_KEY,
@@ -82,16 +112,13 @@ def get_local_resources():
         "num": 5
     }
 
-    # Make the API request
     response = requests.get(url, params=params)
-    if response.status_code != 200:
-        print("Google API Error:", response.text)  # Log the error
+    search_results = response.json().get("items", [])
+
+    if response.status_code != 200 or not search_results:
         return jsonify({"error": "Failed to fetch resources"}), 500
 
-    search_results = response.json()
-    print("Google API Response:", search_results)  # Log the full response
-
-    resources = [{"name": item["title"], "link": item["link"]} for item in search_results.get("items", [])]
+    resources = [{"name": item["title"], "link": item["link"]} for item in search_results]
     return jsonify({"resources": resources})
 
 @app.route("/")
