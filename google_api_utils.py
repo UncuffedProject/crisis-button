@@ -109,3 +109,27 @@ def geocode_location(location):
         if data["results"]:
             return data["results"][0]["geometry"]["location"]
     return None
+
+def search_places(query, location):
+    """
+    Search for resources related to a query and location using the Google Places API.
+    """
+    places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+    params = {
+        "query": query,
+        "location": location,
+        "key": GOOGLE_API_KEY,
+    }
+    response = requests.get(places_url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        if "results" in data:
+            return [
+                {
+                    "name": place.get("name", "No name available"),
+                    "address": place.get("formatted_address", "No address available"),
+                    "place_id": place.get("place_id"),
+                }
+                for place in data["results"]
+            ]
+    return []
