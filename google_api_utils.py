@@ -5,6 +5,7 @@ import os
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 
+
 def get_location_name(latitude, longitude):
     """
     Converts GPS coordinates to a human-readable location using Google Geocoding API.
@@ -27,6 +28,7 @@ def get_location_name(latitude, longitude):
         )
         return f"{locality}, {state}" if locality and state else data["results"][0]["formatted_address"]
     return None
+
 
 def get_place_details(place_name, location):
     """
@@ -79,6 +81,7 @@ def get_place_details(place_name, location):
         "website": "Website not available",
     }
 
+
 def search_resources(query, location_name):
     """
     Use Google Custom Search API to find resources.
@@ -93,10 +96,6 @@ def search_resources(query, location_name):
     response = requests.get(search_url, params=params)
     return response.json().get("items", [])
 
-import requests
-import os
-
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
 def geocode_location(location):
     """
