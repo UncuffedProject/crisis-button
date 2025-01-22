@@ -5,7 +5,6 @@ import os
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 GOOGLE_CSE_ID = os.getenv("GOOGLE_CSE_ID")
 
-
 def get_location_name(latitude, longitude):
     """
     Converts GPS coordinates to a human-readable location using Google Geocoding API.
@@ -28,7 +27,6 @@ def get_location_name(latitude, longitude):
         )
         return f"{locality}, {state}" if locality and state else data["results"][0]["formatted_address"]
     return None
-
 
 def get_place_details(place_name, location):
     """
@@ -81,7 +79,6 @@ def get_place_details(place_name, location):
         "website": "Website not available",
     }
 
-
 def search_resources(query, location_name):
     """
     Use Google Custom Search API to find resources.
@@ -95,41 +92,3 @@ def search_resources(query, location_name):
     }
     response = requests.get(search_url, params=params)
     return response.json().get("items", [])
-
-
-def geocode_location(location):
-    """
-    Geocodes a user-provided location into latitude and longitude using the Google Geocoding API.
-    """
-    url = "https://maps.googleapis.com/maps/api/geocode/json"
-    params = {"address": location, "key": GOOGLE_API_KEY}
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        if data["results"]:
-            return data["results"][0]["geometry"]["location"]
-    return None
-
-def search_places(query, location):
-    """
-    Search for resources related to a query and location using the Google Places API.
-    """
-    places_url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
-    params = {
-        "query": query,
-        "location": location,
-        "key": GOOGLE_API_KEY,
-    }
-    response = requests.get(places_url, params=params)
-    if response.status_code == 200:
-        data = response.json()
-        if "results" in data:
-            return [
-                {
-                    "name": place.get("name", "No name available"),
-                    "address": place.get("formatted_address", "No address available"),
-                    "place_id": place.get("place_id"),
-                }
-                for place in data["results"]
-            ]
-    return []
