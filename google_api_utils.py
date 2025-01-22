@@ -92,3 +92,21 @@ def search_resources(query, location_name):
     }
     response = requests.get(search_url, params=params)
     return response.json().get("items", [])
+
+import requests
+import os
+
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+def geocode_location(location):
+    """
+    Geocodes a user-provided location into latitude and longitude using the Google Geocoding API.
+    """
+    url = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {"address": location, "key": GOOGLE_API_KEY}
+    response = requests.get(url, params=params)
+    if response.status_code == 200:
+        data = response.json()
+        if data["results"]:
+            return data["results"][0]["geometry"]["location"]
+    return None
