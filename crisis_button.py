@@ -9,6 +9,8 @@ from disasters.disaster_descriptions.mental_health_crisis_descriptions import mo
 
 from google_api_utils import get_location_name, get_place_details, search_resources
 
+import requests
+
 app = Flask(__name__)
 
 DISASTER_DESCRIPTIONS = {
@@ -151,6 +153,31 @@ def get_local_resources():
 
     # Return the resources as a JSON response
     return jsonify({"resources": resources})
+
+@app.route("/geocode_location", methods=["POST"])
+def geocode_location():
+    """
+    Endpoint to convert user-entered location into latitude and longitude.
+    """
+    location = request.json.get("location")
+    if not location:
+        return jsonify({"error": "Location not provided"}), 400
+
+    geocode_url = "https://maps.googleapis.com/maps/api/geocode/json"
+    params = {
+        "address": location,
+        "key": GOOGLE_API_KEY
+    }
+    response = requests.get(geocode_url, params=params)
+    data = response.json()
+
+    if response.status_code == 200 and data["results"]:
+        coordinates = data["results"][0]["geometry"]["location"]
+        return jsonify({
+            "latitude": coordinates["lat"],
+            "longitude": coordinates["lng"]
+        })
+    return jsonify({"error": "Could not geocode location"}), 400
 
 if __name__ == "__main__":
     app.run(debug=True)

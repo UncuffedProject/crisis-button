@@ -18,6 +18,14 @@
         Tap on the red button to find services and resources to help.
     </p>
 
+    <button id="get-current-location" onclick="getCurrentLocation()">Use Current Location</button>
+
+    <div>
+        <label for="manual-location">Enter Location:</label>
+        <input type="text" id="manual-location" placeholder="City, State or Address">
+        <button onclick="useManualLocation()">Search</button>
+    </div>    
+
     <div id="grid-container" class="grid" style="display: none;"></div>
     
     <div id="description-box" style="display: none;"></div>

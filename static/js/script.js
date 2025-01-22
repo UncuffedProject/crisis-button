@@ -136,3 +136,82 @@ async function showDescription(subcategory) {
         alert("Failed to load description and resources. Please try again.");
     }
 }
+
+function getCurrentLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                console.log("Current Location:", latitude, longitude);
+                fetchResourcesWithLocation(latitude, longitude);
+            },
+            (error) => {
+                alert("Unable to fetch your location. Please try again.");
+                console.error("Geolocation Error:", error);
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by your browser.");
+    }
+}
+
+function useManualLocation() {
+    const location = document.getElementById("manual-location").value;
+    if (!location) {
+        alert("Please enter a location.");
+        return;
+    }
+    console.log("Manual Location:", location);
+
+    fetch("/geocode_location", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ location: location })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.latitude && data.longitude) {
+            fetchResourcesWithLocation(data.latitude, data.longitude);
+        } else {
+            alert("Could not fetch coordinates for the entered location.");
+        }
+    })
+    .catch(error => console.error("Error geocoding location:", error));
+}
+
+function fetchResourcesWithLocation(latitude, longitude) {
+    const subcategory = "Earthquakes"; // Replace this with the selected subcategory dynamically.
+    fetch("/get_description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            subcategory: subcategory,
+            latitude: latitude,
+            longitude: longitude
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        const descriptionBox = document.getElementById("description-box");
+        descriptionBox.innerHTML = `<p>${data.description || "Description not available."}</p>`;
+
+        if (data.resources && data.resources.length > 0) {
+            const resourcesList = document.createElement("ul");
+            data.resources.forEach(resource => {
+                const resourceItem = document.createElement("li");
+                resourceItem.innerHTML = `
+                    <strong>${resource.name || "Name not available"}</strong><br>
+                    Address: ${resource.address || "Not available"}<br>
+                    Phone: ${resource.phone || "Not available"}<br>
+                    Website: <a href="${resource.website || "#"}" target="_blank">${resource.website || "Not available"}</a>
+                `;
+                resourcesList.appendChild(resourceItem);
+            });
+            descriptionBox.appendChild(resourcesList);
+        } else {
+            descriptionBox.innerHTML += `<p>No resources found nearby.</p>`;
+        }
+    })
+    .catch(error => console.error("Error fetching resources:", error));
+}
